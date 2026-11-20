@@ -3,7 +3,7 @@
 //  Firebase Console → Project settings → General → Your apps → Web app → Config
 //  (This key is safe to be public — your data is protected by firestore.rules)
 // ============================================================
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyAtj2JrJW2lCL0ZVVKvqg3xwyc7Ol5T68w",
   authDomain: "folio-library-366ed.firebaseapp.com",
   projectId: "folio-library-366ed",
