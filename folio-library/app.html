@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Folio — Library</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23c08a3e'/><text x='50' y='72' font-size='64' text-anchor='middle' font-family='Georgia' font-weight='bold' fill='%2315372a'>F</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="loader" id="loader"><div class="spines"><span></span><span></span><span></span><span></span></div></div>
+
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">F</span> <span id="libName">Folio</span></div>
+
+    <nav class="nav">
+      <div class="nav-label">Library</div>
+      <button class="nav-btn active" data-action="goto" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-btn" data-action="goto" data-view="books">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6.5A2.5 2.5 0 0 0 4 21.5v-2z"/><path d="M8 7h7M8 11h5"/></svg>
+        Catalogue
+      </button>
+      <button class="nav-btn" data-action="goto" data-view="members">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8"/><path d="M22 21c0-3-1.5-5-4-5.7"/></svg>
+        Members
+      </button>
+      <button class="nav-btn" data-action="goto" data-view="loans">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a2 2 0 0 1 2-2h16"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a2 2 0 0 1-2 2H3"/></svg>
+        Circulation
+        <span class="badge" id="overdueBadge" hidden>0</span>
+      </button>
+    </nav>
+
+    <div class="user-card">
+      <div class="avatar" id="avatar">?</div>
+      <div class="user-meta">
+        <div class="user-name" id="userName">—</div>
+        <div class="user-email" id="userEmail">—</div>
+      </div>
+      <button class="logout" data-action="logout" title="Log out" aria-label="Log out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow" id="today"></p>
+        <h1 id="viewTitle">Dashboard</h1>
+      </div>
+      <button class="btn btn-primary" data-action="issue-new">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Issue a book
+      </button>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="view" id="view-dashboard">
+      <div class="stats" id="stats"></div>
+      <div id="dashEmpty" hidden class="panel empty">
+        <div class="big">📚</div>
+        <h3>Your shelves are empty</h3>
+        <p>Add your first book, or load a sample collection to explore Folio.</p>
+        <button class="btn btn-primary" data-action="seed">Load sample library</button>
+        <button class="btn" data-action="add-book">Add a book</button>
+      </div>
+      <div class="grid-2" id="dashGrid">
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>Overdue returns</h2><button class="btn btn-sm btn-ghost" data-action="goto" data-view="loans" data-filter="overdue">View all →</button></div>
+            <div id="overdueList"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Recent activity</h2></div>
+            <div id="activity"></div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>Shelves by genre</h2></div>
+            <div id="genreBars"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Most borrowed</h2></div>
+            <div id="popular"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOOKS -->
+    <section class="view" id="view-books" hidden>
+      <div class="toolbar">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input class="input" id="bookSearch" placeholder="Search title, author, ISBN…">
+        </div>
+        <select class="input" id="genreFilter"><option value="">All genres</option></select>
+        <select class="input" id="availFilter">
+          <option value="">Any status</option>
+          <option value="in">Available</option>
+          <option value="out">All copies out</option>
+        </select>
+        <button class="btn btn-primary" data-action="add-book">+ Add book</button>
+      </div>
+      <div class="books" id="bookGrid"></div>
+    </section>
+
+    <!-- MEMBERS -->
+    <section class="view" id="view-members" hidden>
+      <div class="toolbar">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input class="input" id="memberSearch" placeholder="Search name, email, member ID…">
+        </div>
+        <button class="btn btn-primary" data-action="add-member">+ Add member</button>
+      </div>
+      <div id="memberTable"></div>
+    </section>
+
+    <!-- LOANS -->
+    <section class="view" id="view-loans" hidden>
+      <div class="toolbar">
+        <div class="tabs" id="loanTabs">
+          <button class="tab active" data-f="active">On loan</button>
+          <button class="tab" data-f="overdue">Overdue</button>
+          <button class="tab" data-f="returned">Returned</button>
+          <button class="tab" data-f="all">All</button>
+        </div>
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input class="input" id="loanSearch" placeholder="Search book or member…">
+        </div>
+      </div>
+      <div id="loanTable"></div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ DIALOGS ============ -->
+<dialog id="bookDialog">
+  <form id="bookForm">
+    <div class="dlg-head"><p class="eyebrow">Catalogue</p><h2 id="bookDlgTitle">Add a book</h2></div>
+    <div class="dlg-body form-grid">
+      <div class="field span-2"><label>Title *</label><input class="input" name="title" required maxlength="200"></div>
+      <div class="field span-2"><label>Author *</label><input class="input" name="author" required maxlength="120"></div>
+      <div class="field"><label>Genre</label><input class="input" name="genre" list="genreList" placeholder="e.g. Fiction" maxlength="40"></div>
+      <div class="field"><label>Year</label><input class="input" name="year" type="number" min="0" max="2100" placeholder="e.g. 2019"></div>
+      <div class="field"><label>ISBN</label><input class="input" name="isbn" maxlength="20" placeholder="Optional"></div>
+      <div class="field"><label>Shelf / Rack</label><input class="input" name="shelf" maxlength="20" placeholder="e.g. B-04"></div>
+      <div class="field"><label>Copies *</label><input class="input" name="copies" type="number" min="1" max="999" value="1" required></div>
+    </div>
+    <datalist id="genreList"></datalist>
+    <div class="dlg-foot">
+      <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+      <button type="submit" class="btn btn-primary">Save book</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="memberDialog">
+  <form id="memberForm">
+    <div class="dlg-head"><p class="eyebrow">Members</p><h2 id="memberDlgTitle">Add a member</h2></div>
+    <div class="dlg-body form-grid">
+      <div class="field span-2"><label>Full name *</label><input class="input" name="name" required maxlength="100"></div>
+      <div class="field"><label>Email</label><input class="input" name="email" type="email" maxlength="120"></div>
+      <div class="field"><label>Phone</label><input class="input" name="phone" maxlength="20"></div>
+      <div class="field"><label>Member ID</label><input class="input" name="memberId" maxlength="20" placeholder="Auto if blank"></div>
+      <div class="field"><label>Type</label>
+        <select class="input" name="type"><option>Student</option><option>Faculty</option><option>Staff</option><option>Public</option></select>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+      <button type="submit" class="btn btn-primary">Save member</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="issueDialog">
+  <form id="issueForm">
+    <div class="dlg-head"><p class="eyebrow">Circulation</p><h2>Issue a book</h2></div>
+    <div class="dlg-body">
+      <div class="field"><label>Book *</label><select class="input" name="bookId" required></select></div>
+      <div class="field"><label>Member *</label><select class="input" name="memberId" required></select></div>
+      <div class="field"><label>Due date *</label><input class="input" name="due" type="date" required></div>
+      <p class="hint" id="fineHint"></p>
+    </div>
+    <div class="dlg-foot">
+      <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+      <button type="submit" class="btn btn-primary">Issue book</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="confirmDialog">
+  <div class="dlg-head"><h2 id="confirmTitle">Are you sure?</h2></div>
+  <div class="dlg-body"><p id="confirmText" class="muted"></p></div>
+  <div class="dlg-foot">
+    <button type="button" class="btn btn-ghost" id="confirmNo">Cancel</button>
+    <button type="button" class="btn btn-primary" id="confirmYes">Confirm</button>
+  </div>
+</dialog>
+
+<div id="toasts"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
