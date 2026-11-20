@@ -248,3 +248,6 @@ dialog[open]{animation:pop .2s ease}
   .span-2{grid-column:auto}
   #toasts{left:16px;right:16px;bottom:90px}
 }
+
+/* Remove ruled lines on the login card */
+.index-card{background-image:none !important}
